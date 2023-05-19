@@ -49,10 +49,11 @@ async function run() {
 
     //filter by category
     
-    app.get('/toys/:category', async (req,res)=>{
+    app.get('/CategoryToys/:category', async (req,res)=>{
         const subCategory = req.params.category;
-        const result = await toyCollection.find({subCategory: subCategory}).toArray();
+        const result = await toyCollection.find({category: subCategory}).toArray();
         res.send(result);
+        
     })
 
     app.get('/myToys', async(req,res)=>{
@@ -73,6 +74,13 @@ async function run() {
         const toy = req.body;
         const result = await toyCollection.insertOne(toy);
         res.send(result);
+    })
+
+    app.delete('/toys/:id', async(req,res)=>{
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)}
+        const result = await toyCollection.deleteOne(query)
+        res.send(result)
     })
 
 
