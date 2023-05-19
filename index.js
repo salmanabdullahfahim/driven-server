@@ -38,10 +38,20 @@ async function run() {
         res.send(result);
     })
 
+    //filter by id
+
     app.get('/toys/:id', async(req,res)=>{
         const id = req.params.id;
         const query = {_id: new ObjectId(id)};
         const result = await toyCollection.findOne(query);
+        res.send(result);
+    })
+
+    //filter by category
+    
+    app.get('/toys/:category', async (req,res)=>{
+        const subCategory = req.params.category;
+        const result = await toyCollection.find({subCategory: subCategory}).toArray();
         res.send(result);
     })
 
