@@ -36,19 +36,19 @@ async function run() {
         const toyCollection = client.db('drivenDB').collection('toys');
 
 
-        const indexKey = { toyName: 1};
-        const indexOption = {name : "nameSearch"};
+        const indexKey = { toyName: 1 };
+        const indexOption = { name: "nameSearch" };
 
-        const result = await toyCollection.createIndex(indexKey,indexOption);
+        const result = await toyCollection.createIndex(indexKey, indexOption);
 
 
         // search by name
 
-        app.get('/toySearchByName/:text', async(req,res)=>{
+        app.get('/toySearchByName/:text', async (req, res) => {
 
             const searchText = req.params.text;
 
-            const result = await toyCollection.find({ toyName: { $regex: searchText, $options: "i"}}).toArray();
+            const result = await toyCollection.find({ toyName: { $regex: searchText, $options: "i" } }).toArray();
 
             res.send(result);
         })
@@ -83,16 +83,25 @@ async function run() {
         //filter by email
 
         app.get('/myToys', async (req, res) => {
-            let query = {}
+            let query = {};
 
             if (req.query?.email) {
                 query = {
                     sellerEmail: req.query.email
-                }
-
+                };
             }
-            const result = await toyCollection.find(query).toArray();
-            res.send(result)
+
+            const sortOption = req.query.sort;
+            let sortQuery = {};
+
+            if (sortOption === 'asc') {
+                sortQuery = { price: 1 }; // Sort by price in ascending order
+            } else if (sortOption === 'desc') {
+                sortQuery = { price: -1 }; // Sort by price in descending order
+            }
+
+            const result = await toyCollection.find(query).sort(sortQuery).toArray();
+            res.send(result);
 
         })
 
@@ -114,7 +123,7 @@ async function run() {
                 $set: {
                     price: toyInfo.price,
                     availableQuantity: toyInfo.availableQuantity,
-                    details: toyData.details,
+                    details: toyInfo.details,
                 },
             };
             const result = await toyCollection.updateOne(filter, updatedToy);
