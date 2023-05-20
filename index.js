@@ -36,6 +36,24 @@ async function run() {
         const toyCollection = client.db('drivenDB').collection('toys');
 
 
+        const indexKey = { toyName: 1};
+        const indexOption = {name : "nameSearch"};
+
+        const result = await toyCollection.createIndex(indexKey,indexOption);
+
+
+        // search by name
+
+        app.get('/toySearchByName/:text', async(req,res)=>{
+
+            const searchText = req.params.text;
+
+            const result = await toyCollection.find({ toyName: { $regex: searchText, $options: "i"}}).toArray();
+
+            res.send(result);
+        })
+
+
         //All toys
 
         app.get('/toys', async (req, res) => {
@@ -60,6 +78,9 @@ async function run() {
             res.send(result);
 
         })
+
+
+        //filter by email
 
         app.get('/myToys', async (req, res) => {
             let query = {}
