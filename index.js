@@ -42,6 +42,21 @@ async function run() {
         const result = await toyCollection.createIndex(indexKey, indexOption);
 
 
+
+
+        // All toys
+
+        app.get('/toys', async (req, res) => {
+
+            const limit = parseInt(req.query.limit);
+
+            const result = await toyCollection.find().limit(limit).toArray();
+            res.send(result);
+        })
+
+      
+
+
         // search by name
 
         app.get('/toySearchByName/:text', async (req, res) => {
@@ -54,12 +69,7 @@ async function run() {
         })
 
 
-        //All toys
 
-        app.get('/toys', async (req, res) => {
-            const result = await toyCollection.find().toArray();
-            res.send(result);
-        })
 
         //filter by id
 
@@ -100,7 +110,7 @@ async function run() {
                 sortQuery = { price: -1 }; // Sort by price in descending order
             }
 
-            const result = await toyCollection.find(query).sort(sortQuery).toArray();
+            const result = await toyCollection.find(query).sort(sortQuery).collation({ locale: "en_US", numericOrdering: true }).toArray();
             res.send(result);
 
         })
