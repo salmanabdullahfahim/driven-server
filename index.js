@@ -43,10 +43,13 @@ async function run() {
             }
         })
 
-        //collection
+
+        //ToyCollection
 
         const toyCollection = client.db('drivenDB').collection('toys');
 
+
+        //indexing
 
         const indexKey = { toyName: 1 };
         const indexOption = { name: "nameSearch" };
@@ -69,7 +72,7 @@ async function run() {
       
 
 
-        // search by name
+        // search toy by name
 
         app.get('/toySearchByName/:text', async (req, res) => {
 
@@ -102,7 +105,7 @@ async function run() {
         })
 
 
-        //filter by email
+        //filter by specific email
 
         app.get('/myToys', async (req, res) => {
             let query = {};
@@ -127,6 +130,7 @@ async function run() {
 
         })
 
+
         //post
 
         app.post('/toys', async (req, res) => {
@@ -134,6 +138,7 @@ async function run() {
             const result = await toyCollection.insertOne(toy);
             res.send(result);
         })
+        
 
         //update
 
